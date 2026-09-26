@@ -1,1 +1,304 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legend Dream Store - متجر أسطورة الأحلام الشامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f8fafc; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-effect { box-shadow: 0 0 30px rgba(168, 85, 247, 0.25); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-2xl border-b border-slate-800/80">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 p-2.5 rounded-2xl shadow-lg shadow-purple-500/30">
+                <i class="fa-solid fa-crown text-white text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400">Legend Dream</h1>
+                <p class="text-[10px] text-slate-400 font-semibold tracking-wider">متجر الأحلام الاحترافي</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="openCart()" class="relative bg-purple-600 hover:bg-purple-700 px-4 py-2.5 rounded-2xl font-bold transition flex items-center gap-2 shadow-lg shadow-purple-600/30">
+                <i class="fa-solid fa-cart-shopping"></i> <span class="hidden sm:inline">السلة</span>
+                <span id="cart-count" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-black">0</span>
+            </button>
+            <button onclick="openAdminModal()" class="glass hover:bg-slate-800 px-4 py-2.5 rounded-2xl font-bold transition flex items-center gap-2 border border-slate-700/80">
+                <i class="fa-solid fa-lock text-purple-400"></i> <span class="hidden md:inline">الإدارة</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي للمتجر -->
+    <main class="flex-grow container mx-auto px-4 py-12">
+        <div class="text-center mb-16">
+            <span class="bg-purple-500/10 text-purple-400 border border-purple-500/25 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 inline-block shadow-sm">منصة الخدمات الرقمية المتكاملة</span>
+            <h2 class="text-4xl md:text-6xl font-black mb-4 text-white tracking-tight">اكتشف أرقى المنتجات والخدمات</h2>
+            <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">تصفح أقوى المنتجات الرقمية، أضفها إلى سلتك، وأرسل طلبك مباشرة إلى فريق العمل عبر ديسكورد بضغطة زر واحدة.</p>
+        </div>
+        
+        <!-- شبكة عرض المنتجات -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="col-span-3 text-center py-24 glass rounded-3xl border border-slate-800">
+                <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 text-purple-500"></i>
+                <p class="text-slate-300 font-bold text-lg">جاري مزامنة وجلب المنتجات من قاعدة البيانات...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- نافذة سلة المشتريات -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex justify-center items-center p-4 transition-all duration-300">
+        <div class="glass w-full max-w-lg p-6 md:p-8 rounded-3xl relative border border-slate-700/80 shadow-2xl glow-effect">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                <h3 class="text-xl font-black text-white flex items-center gap-3"><i class="fa-solid fa-bag-shopping text-purple-400 text-2xl"></i> سلة الشراء الخاصة بك</h3>
+                <button onclick="closeCart()" class="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 p-2.5 rounded-2xl transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="cart-items" class="space-y-3 max-h-72 overflow-y-auto mb-6 pr-2">
+                <!-- عناصر السلة -->
+            </div>
+            <div class="border-t border-slate-800 pt-4 mb-6 flex justify-between items-center font-bold text-lg">
+                <span class="text-slate-300">الإجمالي الكلي:</span>
+                <div>
+                    <span id="cart-total" class="text-purple-400 text-3xl font-black">0</span> <span class="text-xs text-slate-400">د.إ</span>
+                </div>
+            </div>
+            <button onclick="checkout()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-4 rounded-2xl font-black text-lg transition shadow-xl shadow-green-600/30 flex items-center justify-center gap-3 text-white">
+                <i class="fa-brands fa-discord text-2xl"></i> إتمام الطلب وإرساله عبر ديسكورد
+            </button>
+        </div>
+    </div>
+
+    <!-- نافذة لوحة التحكم (الإدارة) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex justify-center items-center p-4 transition-all duration-300">
+        <div class="glass w-full max-w-md p-6 md:p-8 rounded-3xl relative border border-slate-700/80 shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                <h3 class="text-xl font-black text-white flex items-center gap-3"><i class="fa-solid fa-shield-halved text-purple-400 text-2xl"></i> لوحة تحكم المتجر</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 p-2.5 rounded-2xl transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <!-- قسم تسجيل الدخول -->
+            <div id="admin-login-sec" class="space-y-5">
+                <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+                    <p class="text-sm text-slate-300 font-semibold mb-1">منطقة محمية للمسؤولين</p>
+                    <p class="text-xs text-slate-500">الرجاء إدخال كلمة المرور الخاصة بصلاحيات المدير (الافتراضية: 2013)</p>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-2 font-bold">كلمة المرور</label>
+                    <input type="password" id="admin-pass" placeholder="أدخل كلمة المرور هنا..." class="w-full bg-slate-900 border border-slate-700/80 p-4 rounded-2xl text-white focus:outline-none focus:border-purple-500 transition font-mono tracking-widest">
+                </div>
+                <button onclick="verifyAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-bold transition shadow-lg shadow-purple-600/30 text-white">دخول اللوحة</button>
+            </div>
+
+            <!-- قسم إدارة وإضافة المنتجات -->
+            <div id="admin-panel-sec" class="hidden space-y-4">
+                <div class="bg-purple-500/10 border border-purple-500/25 p-4 rounded-2xl text-xs text-purple-300 font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-lg"></i>
+                    <span>أهلاً بك يا أستاذ! يمكنك إضافة منتجات جديدة تظهر فوراً للعملاء.</span>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1.5 font-bold">اسم المنتج</label>
+                    <input type="text" id="p-name" placeholder="مثال: حساب نتفلكس 4K / شدات ببجي" class="w-full bg-slate-900 border border-slate-700/80 p-3.5 rounded-2xl text-white focus:outline-none focus:border-purple-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1.5 font-bold">السعر (بالدرهم / الريال)</label>
+                    <input type="number" id="p-price" placeholder="مثال: 99" class="w-full bg-slate-900 border border-slate-700/80 p-3.5 rounded-2xl text-white focus:outline-none focus:border-purple-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1.5 font-bold">رابط صورة المنتج (URL)</label>
+                    <input type="text" id="p-img" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700/80 p-3.5 rounded-2xl text-white focus:outline-none focus:border-purple-500 transition">
+                </div>
+                <button onclick="addProduct()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 py-4 rounded-2xl font-black transition shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 text-white">
+                    <i class="fa-solid fa-plus-circle text-lg"></i> نشر المنتج في المتجر
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer class="glass border-t border-slate-800/80 py-8 text-center text-slate-500 text-sm mt-auto">
+        <p class="flex items-center justify-center gap-2">
+            جميع الحقوق محفوظة &copy; 2026 <span class="text-purple-400 font-bold">Legend Dream Store</span>
+            <i class="fa-solid fa-heart text-red-500 text-xs"></i>
+        </p>
+    </footer>
+
+    <!-- سكريبت التشغيل وقاعدة البيانات -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ==========================================
+        // ضع إعدادات فايربيز (Firebase) الخاصة بك هنا:
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "ضع_apiKey_هنا",
+            authDomain: "ضع_authDomain_هنا",
+            projectId: "ضع_projectId_هنا",
+            storageBucket: "ضع_storageBucket_هنا",
+            messagingSenderId: "ضع_messagingSenderId_هنا",
+            appId: "ضع_appId_هنا"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // ضع رابط ويب هوك ديسكورد هنا بين القوسين
+        const DISCORD_WEBHOOK_URL = "ضع_رابط_الديسكورد_هنا";
+
+        window.cart = [];
+
+        // دالة جلب المنتجات
+        window.loadProducts = async function() {
+            const grid = document.getElementById('products-grid');
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                if (querySnapshot.empty) {
+                    grid.innerHTML = `
+                        <div class="col-span-3 text-center py-20 glass rounded-3xl border border-slate-800">
+                            <i class="fa-solid fa-box-open text-5xl text-purple-400 mb-4"></i>
+                            <p class="text-slate-200 font-black text-xl mb-2">لا توجد منتجات مسجلة حالياً</p>
+                            <p class="text-slate-400 text-sm">اضغط على زر <span class="text-purple-400 font-bold">الإدارة</span> واكتب كلمة المرور <span class="text-purple-400 font-bold font-mono">2013</span> لإضافة أول منتج!</p>
+                        </div>`;
+                    return;
+                }
+                grid.innerHTML = "";
+                querySnapshot.forEach((docSnap) => {
+                    const p = docSnap.data();
+                    grid.innerHTML += `
+                        <div class="glass p-6 rounded-3xl flex flex-col justify-between hover:border-purple-500/50 transition duration-300 border border-slate-800 shadow-xl group">
+                            <div>
+                                <div class="overflow-hidden rounded-2xl mb-5 relative">
+                                    <img src="${p.img || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60'}" class="h-52 w-full object-cover group-hover:scale-105 transition duration-500">
+                                </div>
+                                <h4 class="font-black text-xl mb-2 text-white group-hover:text-purple-400 transition">${p.name}</h4>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center my-4 pt-3 border-t border-slate-800/80">
+                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">السعر الرسمي:</span>
+                                    <span class="text-purple-400 font-black text-2xl">${p.price} <span class="text-xs font-normal text-slate-400">د.إ</span></span>
+                                </div>
+                                <button onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price})" class="w-full bg-purple-600 hover:bg-purple-700 py-3.5 rounded-2xl font-bold transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-white">
+                                    <i class="fa-solid fa-cart-plus"></i> إضافة إلى السلة
+                                </button>
+                            </div>
+                        </div>`;
+                });
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = `<div class="col-span-3 text-center py-16 glass rounded-3xl border border-red-500/30 text-red-400"><p class="font-bold text-lg">تعذر تحميل المنتجات. تأكد من ضبط إعدادات فايربيز في الكود.</p></div>`;
+            }
+        }
+
+        // إضافة للسلة
+        window.addToCart = function(name, price) {
+            window.cart.push({name, price});
+            document.getElementById('cart-count').innerText = window.cart.length;
+            
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-6 left-6 bg-purple-600 text-white px-6 py-3.5 rounded-2xl shadow-2xl z-50 font-bold flex items-center gap-3 border border-purple-400/30 animate-pulse";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-xl"></i> تمت إضافة (${name}) إلى سلة الشراء!`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        // التحكم بالسلة
+        window.openCart = function() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+            const itemsDiv = document.getElementById('cart-items');
+            itemsDiv.innerHTML = "";
+            let total = 0;
+            
+            if (window.cart.length === 0) {
+                itemsDiv.innerHTML = `<div class="text-center py-12 text-slate-500"><i class="fa-solid fa-basket-shopping text-3xl mb-2 text-slate-600"></i><p>سلة الشراء فارغة تماماً</p></div>`;
+            } else {
+                window.cart.forEach((item) => {
+                    total += item.price;
+                    itemsDiv.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-inner">
+                            <span class="font-bold text-white">${item.name}</span>
+                            <span class="text-purple-400 font-bold font-mono">${item.price} د.إ</span>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-total').innerText = total;
+        }
+        window.closeCart = function() { document.getElementById('cart-modal').classList.add('hidden'); }
+
+        // التحكم بالإدارة
+        window.openAdminModal = function() { document.getElementById('admin-modal').classList.remove('hidden'); }
+        window.closeAdminModal = function() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+        window.verifyAdmin = function() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === "2013") {
+                document.getElementById('admin-login-sec').classList.add('hidden');
+                document.getElementById('admin-panel-sec').classList.remove('hidden');
+            } else {
+                alert("كلمة المرور غير صحيحة! تأكد من الرقم (2013).");
+            }
+        }
+
+        // إضافة منتج جديد
+        window.addProduct = async function() {
+            const name = document.getElementById('p-name').value;
+            const price = Number(document.getElementById('p-price').value);
+            const img = document.getElementById('p-img').value;
+            
+            if(!name || !price) return alert("يرجى إدخال اسم المنتج والسعر على الأقل!");
+            
+            try {
+                await addDoc(collection(db, "products"), { name, price, img });
+                alert("تم إيراد المنتج بنجاح وإضافته للمتجر!");
+                document.getElementById('p-name').value = "";
+                document.getElementById('p-price').value = "";
+                document.getElementById('p-img').value = "";
+                closeAdminModal();
+                loadProducts();
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء الاتصال بقاعدة البيانات. تأكد من بيانات فايربيز وقواعد الحماية.");
+            }
+        }
+
+        // إتمام الطلب والديسكورد
+        window.checkout = async function() {
+            if(window.cart.length === 0) return alert("السلة فارغة يا أسطورة!");
+            
+            let total = window.cart.reduce((sum, i) => sum + i.price, 0);
+            let orderMsg = "🚀 **طلب شراء جديد مؤكد عبر المتجر!**\n";
+            window.cart.forEach(i => orderMsg += `🔹 ${i.name} - **${i.price} د.إ**\n`);
+            orderMsg += `\n💰 **المبلغ الإجمالي المستحق:** ${total} د.إ`;
+
+            if(DISCORD_WEBHOOK_URL.startsWith("http")) {
+                try {
+                    await fetch(DISCORD_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({content: orderMsg})
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            alert("تم إرسال طلبك بنجاح للديسكورد! شكراً لثقتكم بمتجرنا.");
+            window.cart = [];
+            closeCart();
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>
